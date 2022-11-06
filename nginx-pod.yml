@@ -1,0 +1,56 @@
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-Pod
+  labels:
+    type: nginx
+    app: myapp-nginx
+spec:
+  containers:
+  - name: nginx-container
+    image: nginx
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+  - name: apache2 
+    image: 'bitnami/apache:latest'
+    args:
+            - PHP_SOCKET=php:9000
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m" 
+  - name: irgendwas
+    image: ''
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m" 
+    ports:
+      - containerPort: 8001
+
+
+### --> gehört nicht wirklich zur Hausaufgabe war bloß zum rumbasteln
+#test
+services:
+    php:
+        build: php
+        expose:
+            - 9000
+        volumes:
+            - ./php/www:/var/www/html
+
+    apache2:
+        image: webdevops/apache:latest
+        args:
+            - PHP_SOCKET=php:9000
+        volumes:
+            - ./php/www:/var/www/html
+        ports:
+            - 80:80
+            - 443:443
+        links:
+            - php
